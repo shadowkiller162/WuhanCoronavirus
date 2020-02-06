@@ -148,7 +148,7 @@ dmypy.json
 ### Vuejs ###
 # Recommended template: Node.gitignore
 
-node_modules/
+frontend/node_modules/
 npm-debug.log
 yarn-error.log
 

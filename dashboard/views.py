@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import json
 import pymongo
 import requests
+import os
 
 # Create your views here.
 class IndexTemplateView(TemplateView):
@@ -32,7 +33,7 @@ def get_pharmacy(request):
             lat_lngs = res_text.split('ll=')[1].split(' ')[0].split(',')
             Y = float(lat_lngs[0].replace('"',''))
             X = float(lat_lngs[1].replace('"',''))
-        client = pymongo.MongoClient("mongodb+srv://hughe:sk10041004@wuhan-pneumonia-xpc7e.mongodb.net/test?retryWrites=true&w=majority")
+        client = pymongo.MongoClient(os.environ['MONGODB_URI'])
         db = client['wuhan']
         collection = db['pharmacy']
         query = {"loc":{"$near":{"$geometry":{"type":"Point","coordinates":[X,  Y]}, "$maxDistance": 500}}}

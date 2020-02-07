@@ -33,9 +33,9 @@
       </form>
 
       <div v-if="inner_error" class="alert alert-warning" role="alert">
-        <h4 class="alert-heading">Oops Failed!</h4>
+        <h4 class="alert-heading">地址無法定位</h4>
         <p>
-          伺服器內部查詢錯誤，請檢查輸入地址或稍後再試，感謝！
+          地址無法找到經緯度，請更換輸入地址。
         </p>
         <hr />
         <button
@@ -46,7 +46,7 @@
           關閉
         </button>
       </div>
-
+      <b><h5 class="mb-2">{{ message }}</h5></b>
       <b v-if="results.length !== 0"><h5 class="mb-2">500公尺內醫療院所及健保特約藥局:</h5></b>
       <div class="container">
         <div class="table-responsive">
@@ -94,6 +94,7 @@ export default {
       form_model: {
         raw_address: null,
       },
+      message:null,
       results: [],
       inner_error: false,
       column_names:[
@@ -113,6 +114,7 @@ export default {
       apiService(endpoint, "POST", this.form_model).then(data => {
         this.results = data["pharmacys"];
         this.inner_error =  data["inner_error"];
+        this.message = data['message'];
       });
     }
   }

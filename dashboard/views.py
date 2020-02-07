@@ -24,17 +24,23 @@ def get_pharmacy(request):
     try:
         response = requests.get('https://www.google.com.tw/maps/place/{}'.format(data['raw_address']))
         res_text = response.text
-        lat_lngs = res_text.split('ll=')[1].split(' ')[0].split(',')
-        Y = float(lat_lngs[0].replace('"',''))
-        X = float(lat_lngs[1].replace('"',''))
+        if 'markers' in res_text:
+            lat_lngs = res_text.split('center=')[1].split('&amp')[0].split('%2C')
+            Y = float(lat_lngs[0])
+            X = float(lat_lngs[1])
+        else:
+            lat_lngs = res_text.split('ll=')[1].split(' ')[0].split(',')
+            Y = float(lat_lngs[0].replace('"',''))
+            X = float(lat_lngs[1].replace('"',''))
         client = pymongo.MongoClient("mongodb+srv://hughe:sk10041004@wuhan-pneumonia-xpc7e.mongodb.net/test?retryWrites=true&w=majority")
         db = client['wuhan']
         collection = db['pharmacy']
         query = {"loc":{"$near":{"$geometry":{"type":"Point","coordinates":[X,  Y]}, "$maxDistance": 500}}}
         pharmacys = list(collection.find(query, projection={'_id': False, 'name': True, 'phone': True, 'address':True, 'adult':True, 'child':True, 'update_time':True}).limit(10))
 
-        print(pharmacys)
-        return JsonResponse({ 'pharmacys' :pharmacys , 'inner_error': False}, safe=False)
+        if len(pharmacys) == 0:
+            return JsonResponse({ 'pharmacys' :pharmacys , 'inner_error': False, 'message': '地址週邊500公尺沒有口罩販賣點'}, safe=False)
+        return JsonResponse({ 'pharmacys' :pharmacys , 'inner_error': False, 'message': None}, safe=False)
     except:
-        return JsonResponse({ 'pharmacys' :[], 'inner_error': True }, safe=False)
+        return JsonResponse({ 'pharmacys' :[], 'inner_error': True, 'message': None }, safe=False)
     

@@ -18,10 +18,9 @@ class IndexTemplateView(TemplateView):
         return template_name
 
 @csrf_exempt
-def get_pharmacy(request):
+def get_google_location(request):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
-
     try:
         response = requests.get('https://www.google.com.tw/maps/place/{}'.format(data['raw_address']))
         res_text = response.text
@@ -33,6 +32,18 @@ def get_pharmacy(request):
             lat_lngs = res_text.split('ll=')[1].split(' ')[0].split(',')
             Y = float(lat_lngs[0].replace('"',''))
             X = float(lat_lngs[1].replace('"',''))
+        return JsonResponse({ 'X' : X , 'Y': Y, 'inner_error': False})
+    except:
+        return JsonResponse({ 'X' : None , 'Y': None, 'inner_error': True })
+
+@csrf_exempt
+def get_pharmacy(request):
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    print(data)
+    try:
+        X = data['X']
+        Y = data['Y']
         client = pymongo.MongoClient(os.environ['MONGODB_URI'])
         db = client['wuhan']
         collection = db['pharmacy']

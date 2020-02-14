@@ -58,7 +58,7 @@
         </button>
       </div>
       <b><h5 class="mb-2">{{ message }}</h5></b>
-      <b v-if="results.length !== 0"><h5 class="mb-2">500公尺內醫療院所及健保特約藥局:</h5></b>
+      <b v-if="results.length !== 0"><h5 class="mb-2">1公里內醫療院所及健保特約藥局:</h5></b>
       <div class="container">
         <div class="table-responsive">
           <table class="table table-striped">
@@ -177,3 +177,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+.home {
+  font-size: 1em;
+}
+</style>

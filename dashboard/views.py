@@ -47,11 +47,11 @@ def get_pharmacy(request):
         client = pymongo.MongoClient(os.environ['MONGODB_URI'])
         db = client['wuhan']
         collection = db['pharmacy']
-        query = {"loc":{"$near":{"$geometry":{"type":"Point","coordinates":[X,  Y]}, "$maxDistance": 500}}}
+        query = {"loc":{"$near":{"$geometry":{"type":"Point","coordinates":[X,  Y]}, "$maxDistance": 1000}}}
         pharmacys = list(collection.find(query, projection={'_id': False, 'name': True, 'phone': True, 'address':True, 'adult':True, 'child':True, 'update_time':True}).limit(10))
 
         if len(pharmacys) == 0:
-            return JsonResponse({ 'pharmacys' :pharmacys , 'inner_error': False, 'message': '地址週邊500公尺沒有口罩販賣點'}, safe=False)
+            return JsonResponse({ 'pharmacys' :pharmacys , 'inner_error': False, 'message': '地址週邊1公里沒有口罩販賣點'}, safe=False)
         return JsonResponse({ 'pharmacys' :pharmacys , 'inner_error': False, 'message': None}, safe=False)
     except:
         return JsonResponse({ 'pharmacys' :[], 'inner_error': True, 'message': None }, safe=False)

@@ -151,4 +151,9 @@ frontend/node_modules/
 npm-debug.log
 yarn-error.log
 
+# pipenv file
+Pipfile
+Pipfile.lock
+
+
 # End of https://www.gitignore.io/api/vuejs,macos,python,visualstudiocode
